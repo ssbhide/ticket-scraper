@@ -8,7 +8,6 @@ import os
 URL = "https://www.maizetix.com/games/398"
 TARGET_PRICE = 70.00
 CSV_FILENAME = "ticket_prices.csv"
-# We will pull the Discord Webhook from a secret cloud environment variable
 WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK") 
 
 def get_current_lowest_price(url):
@@ -52,12 +51,18 @@ def log_price(price):
             writer.writerow(["Timestamp", "Price"])
         writer.writerow([datetime.now().strftime("%Y-%m-%d %H:%M:%S"), price])
 
-def send_discord_alert(price):
+def send_discord_message(price, is_alert):
     if not WEBHOOK_URL:
         return
     
+    # Format the message depending on whether it's an alert or just an update
+    if is_alert:
+        content = f"🚨 **TICKET DROP ALERT!** 🚨\nMichigan vs MSU is down to **${price:.2f}**!\nBuy here: {URL}"
+    else:
+        content = f"ℹ️ **Hourly Update:** The current lowest price is **${price:.2f}**."
+        
     data = {
-        "content": f"🚨 **TICKET DROP ALERT!** 🚨\nMichigan vs MSU is down to **${price:.2f}**!\nBuy here: {URL}"
+        "content": content
     }
     requests.post(WEBHOOK_URL, json=data)
 
@@ -66,8 +71,12 @@ def main():
     
     if current_price is not None:
         log_price(current_price)
+        
+        # Check the price and send the appropriate message type
         if current_price < TARGET_PRICE:
-            send_discord_alert(current_price)
+            send_discord_message(current_price, is_alert=True)
+        else:
+            send_discord_message(current_price, is_alert=False)
 
 if __name__ == "__main__":
     main()
