@@ -4,6 +4,8 @@ from datetime import datetime
 import csv
 import os
 import pandas as pd
+import pytz
+EASTERN_TZ = pytz.timezone('America/New_York')
 import matplotlib
 matplotlib.use('Agg') # Forces headless mode for cloud servers
 import matplotlib.pyplot as plt
@@ -53,7 +55,7 @@ def log_price(price):
         writer = csv.writer(file)
         if not file_exists:
             writer.writerow(["Timestamp", "Price"])
-        writer.writerow([datetime.now().strftime("%Y-%m-%d %H:%M:%S"), price])
+        writer.writerow([datetime.now(EASTERN_TZ).strftime("%Y-%m-%d %H:%M:%S"), price])
 
 def generate_graph():
     """Reads the CSV and generates a line graph image."""
@@ -70,7 +72,7 @@ def generate_graph():
     
     # Formatting
     plt.title('Michigan vs MSU Ticket Price History')
-    plt.xlabel('Date / Time')
+    plt.xlabel('Date / Time (ET)')
     plt.ylabel('Lowest Price ($)')
     plt.grid(True, linestyle='--', alpha=0.7)
     
