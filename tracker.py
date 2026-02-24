@@ -4,6 +4,8 @@ from datetime import datetime
 import csv
 import os
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg') # Forces headless mode for cloud servers
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
