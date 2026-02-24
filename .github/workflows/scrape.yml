@@ -2,14 +2,14 @@ name: Hourly Ticket Tracker
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs at minute 0 of every hour
-  workflow_dispatch: # Allows you to click a button to test it manually
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   scrape-prices:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed so the bot can save the CSV back to your repo
+      contents: write
 
     steps:
       - name: Checkout repository
